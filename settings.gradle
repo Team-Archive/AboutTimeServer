@@ -1,0 +1,5 @@
+rootProject.name = 'AboutTime'
+
+include 'aboutTime-web'
+include 'aboutTime-common'
+
