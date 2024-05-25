@@ -47,10 +47,10 @@ subprojects {
     }
 
 }
-/*
-configure(allprojects.findAll { it.name != 'archive-common' }) {
+
+configure(allprojects.findAll { it.name != 'aboutTime-common' }) {
     dependencies {
-        implementation project(':archive-common')
+        implementation project(':aboutTime-common')
     }
 }
-*/
+
