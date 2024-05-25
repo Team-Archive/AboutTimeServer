@@ -1,5 +1,6 @@
-profiles:
-  active: local
+spring:
+  profiles:
+    active: local
 servlet:
   multipart:
     file-size-threshold: 1MB
@@ -9,15 +10,8 @@ servlet:
 server:
   port: 8080
   forward-headers-strategy: FRAMEWORK
-  tomcat:
-    basedir: .
-    accesslog:
-      enabled: true
-      directory: logs
-      pattern: '%h %l %u %t "%r" %s %b %D'
-      prefix: access
-      suffix: .log
-      rename-on-rotate: true
-      rotate: true
-      file-date-format: .yyyy-MM-dd
-      max-days: 7
+springdoc:
+  swagger-ui:
+    groups-order: DESC
+    tags-sorter: alpha
+    operations-sorter: method

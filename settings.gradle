@@ -2,4 +2,6 @@ rootProject.name = 'AboutTime'
 
 include 'aboutTime-web'
 include 'aboutTime-common'
+include 'aboutTime-application'
+include 'aboutTime-domain'
 
