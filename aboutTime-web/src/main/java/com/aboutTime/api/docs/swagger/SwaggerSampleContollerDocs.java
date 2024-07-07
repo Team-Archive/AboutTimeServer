@@ -1,4 +1,4 @@
-package com.aboutTime.web.api.docs.swagger;
+package com.aboutTime.api.docs.swagger;
 
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.DeleteMapping;

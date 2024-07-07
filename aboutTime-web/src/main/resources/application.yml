@@ -1,6 +1,11 @@
 spring:
   profiles:
     active: local
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
 servlet:
   multipart:
     file-size-threshold: 1MB
