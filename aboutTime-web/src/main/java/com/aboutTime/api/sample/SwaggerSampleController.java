@@ -1,6 +1,6 @@
-package com.aboutTime.web.api.sample;
+package com.aboutTime.api.sample;
 
-import com.aboutTime.web.api.docs.swagger.SwaggerSampleContollerDocs;
+import com.aboutTime.api.docs.swagger.SwaggerSampleContollerDocs;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
