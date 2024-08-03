@@ -32,9 +32,8 @@ public class PostImage extends BaseTimeEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @Builder
-    public PostImage(Long id, String comment, Post post) {
-        this.id = id;
+    public PostImage(String url, String comment, Post post) {
+        this.url = url;
         this.comment = comment;
         this.post = post;
     }

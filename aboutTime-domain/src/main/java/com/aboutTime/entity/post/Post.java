@@ -27,16 +27,16 @@ public class Post extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "author_id", nullable = false)
+    private User author;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private final List<PostImage> postImages = new ArrayList<>();
 
     @Builder
-    public Post(Long id, User user) {
+    public Post(Long id, User author) {
         this.id = id;
-        this.user = user;
+        this.author = author;
     }
 
     public void addImage(PostImage postImage) {

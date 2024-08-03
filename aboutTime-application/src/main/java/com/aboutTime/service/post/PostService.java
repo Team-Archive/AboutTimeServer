@@ -1,6 +1,8 @@
 package com.aboutTime.service.post;
 
-import com.aboutTime.entity.post.Post;
+import com.aboutTime.common.exception.ResourceNotFoundException;
+import com.aboutTime.dto.post.PostDto;
+import com.aboutTime.entity.User;
 import com.aboutTime.entity.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,36 +17,34 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    // 모든 Post 리스트 조회
-    public List<Post> getAllPost() {
-        return postRepository.findAll();
+    public List<PostDto> getAllPostByUserId(User user) {
+        return postRepository.findAllByAuthorId((user.getId())).stream()
+                .map(PostDto::from)
+                .toList();
     }
 
-    // UserId에 따른 Post 리스트 조회
-    public List<Post> getAllPostByUserId(Long userId) {
-        return postRepository.findAllByUserId(userId);
+    public PostDto getOnePostById(Long postId) {
+        var post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 post가 없습니다."));
+
+        return PostDto.from(post);
     }
 
-    // post_id에 따른 Post 단건 조회
-    public Post getOnePostById(Long id) {
-        return postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 post가 없습니다."));
-    }
+//    @Transactional
+//    public void save(PostDto postDto, Long authorId) {
+//        var user = userRepository.findById(authorId)
+//                        .orElseThrow(() -> new ResourceNotFoundException("해당하는 유저가 없습니다."));
+//        var post = postRepository.save(postDto.toEntity(user));
+//
+//        Objects.requireNonNull(postDto.getPostImages()).stream()
+//                .map(archiveImageDto -> archiveImageDto.toEntity(post))
+//                .forEach(post::addImage);
+//    }
 
-    // Post 저장
     @Transactional
-    public void save(Post post) {
-        postRepository.save(post);
-    }
-
-    // Post 수정
-
-
-    // Post 삭제
-    @Transactional
-    public void delete(Long id) {
-        var post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 post가 없습니다."));
+    public void delete(Long postId) {
+        var post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 post가 없습니다."));
         postRepository.delete(post);
     }
 
