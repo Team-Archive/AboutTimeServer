@@ -1,0 +1,39 @@
+package com.aboutTime.domain;
+
+import java.util.Arrays;
+
+public enum OAuthProvider {
+    GOOGLE("google") {
+        @Override
+        public String getOAuth2UserInfoKey() {
+            return "google_account";
+        }
+    },
+    APPLE("apple") {
+        @Override
+        public String getOAuth2UserInfoKey() {
+            return null;
+        }
+    };
+
+    private final String registrationId;
+
+    OAuthProvider(String registrationId) {
+        this.registrationId = registrationId;
+    }
+
+    public static OAuthProvider getByRegistrationId(String id) {
+        return Arrays.stream(OAuthProvider.values())
+                .filter(it -> it.registrationId.equals(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Provider id does not exist: " + id));
+    }
+
+    public abstract String getOAuth2UserInfoKey();
+
+    public String getRegistrationId() {
+        return registrationId;
+    }
+
+
+}
