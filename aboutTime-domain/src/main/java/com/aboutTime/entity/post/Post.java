@@ -33,6 +33,9 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private final List<PostImage> postImages = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private final List<Reaction> reactions = new ArrayList<>();
+
     @Builder
     public Post(Long id, User author) {
         this.id = id;
