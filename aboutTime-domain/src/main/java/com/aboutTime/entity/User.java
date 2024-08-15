@@ -1,7 +1,10 @@
 package com.aboutTime.entity;
 
+import com.aboutTime.domain.UserRole;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
@@ -11,6 +14,8 @@ import java.time.LocalDate;
 @Setter
 @Entity
 @Table(name = "Users", schema = "about_time")
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +28,7 @@ public class User {
 
     @jakarta.validation.constraints.Size(max = 50)
     @Column(name = "user_type", length = 50)
-    private String userType;
+    private UserRole userType;
 
     @jakarta.validation.constraints.Size(max = 50)
     @Column(name = "user_id", length = 50)
@@ -63,4 +68,14 @@ public class User {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
+    protected User(String mailAddress, UserRole role) {
+        this.userType = role;
+        this.userMail = mailAddress;
+    }
+
+    protected User(String mailAddress, UserRole role, String nickname) {
+        this.userType = role;
+        this.userMail = mailAddress;
+        this.userNickname = nickname;
+    }
 }
