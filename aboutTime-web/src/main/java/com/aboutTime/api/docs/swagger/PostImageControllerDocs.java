@@ -15,6 +15,6 @@ public interface PostImageControllerDocs {
             @Parameter(name = "comment", description = "사지 설명") String comment);
 
     @Operation(summary = "이미지 삭제")
-    ResponseEntity<Void> removeImage(Long postImageId);
+    ResponseEntity<Void> removeImage(@Parameter(name = "postImageId") Long postImageId);
 
 }

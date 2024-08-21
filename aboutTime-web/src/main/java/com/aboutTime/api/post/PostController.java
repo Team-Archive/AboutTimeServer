@@ -2,6 +2,7 @@ package com.aboutTime.api.post;
 
 import com.aboutTime.api.docs.swagger.PostControllerDocs;
 import com.aboutTime.dto.post.PostDto;
+import com.aboutTime.dto.post.PostSaveRequestDto;
 import com.aboutTime.entity.User;
 import com.aboutTime.service.post.PostService;
 import lombok.RequiredArgsConstructor;
@@ -19,20 +20,25 @@ public class PostController implements PostControllerDocs {
     private final PostService postService;
 
     @GetMapping
-    public ResponseEntity<List<PostDto>> postList(User user) {
-        return ResponseEntity.ok(postService.getAllPostByUserId(user));
+    public ResponseEntity<List<PostDto>> postList(@RequestParam("userId") Long userId) {
+        return ResponseEntity.ok(postService.getAllPostByUserId(userId));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<PostDto> postSpecificView(@PathVariable Long id) {
-        return ResponseEntity.ok(postService.getOnePostById(id));
+    @GetMapping("/all")
+    public ResponseEntity<List<PostDto>> getAllPost() {
+        return ResponseEntity.ok(postService.getAllPost());
     }
 
-//    @PostMapping
-//    public ResponseEntity<Object> savePost(@RequestBody PostDto postDto, User user) {
-//        postService.save(postDto, user.getId());
-//        return ResponseEntity.status(HttpStatus.CREATED).build();
-//    }
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostDto> postSpecificView(@PathVariable("postId") Long postId) {
+        return ResponseEntity.ok(postService.getOnePostById(postId));
+    }
+
+    @PostMapping
+    public ResponseEntity<Object> savePost(@RequestBody PostSaveRequestDto requestDto, @RequestParam("authorId") Long authorId) {
+        postService.save(requestDto, authorId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
     @DeleteMapping("/{id}")
     public void deletePost(@PathVariable Long id) {

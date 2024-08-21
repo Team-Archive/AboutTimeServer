@@ -3,7 +3,6 @@ package com.aboutTime.entity.post;
 import com.aboutTime.entity.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
