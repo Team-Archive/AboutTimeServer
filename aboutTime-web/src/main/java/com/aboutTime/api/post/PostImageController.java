@@ -26,7 +26,7 @@ public class PostImageController implements PostImageControllerDocs {
     }
 
     @DeleteMapping("/image/remove")
-    public ResponseEntity<Void> removeImage(Long postImageId) {
+    public ResponseEntity<Void> removeImage(@RequestParam("postImageId") Long postImageId) {
         imageService.deleteImage(postImageId);
         return ResponseEntity.noContent().build();
     }

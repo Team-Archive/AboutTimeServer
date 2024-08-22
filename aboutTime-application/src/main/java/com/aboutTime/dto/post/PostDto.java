@@ -3,13 +3,16 @@ package com.aboutTime.dto.post;
 import com.aboutTime.entity.User;
 import com.aboutTime.entity.post.Post;
 import com.aboutTime.entity.post.PostImage;
+import com.aboutTime.entity.post.Reaction;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
@@ -17,27 +20,48 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
 public class PostDto {
+
     private Long postId;
+    private LocalDateTime createdAt;
+    private String mainImage;
+    private String mainComment;
     private Long authorId;
 
     private List<PostImageDto> postImages;
+//    private List<Reaction> reactions;
 
-    public static PostDto from(Post post) {
-        var postImages = post.getPostImages().stream()
-                .map(PostImageDto::from)
-                .toList();
-
-        return PostDto.builder()
-                .postId(post.getId())
-                .authorId(post.getAuthor().getId())
-                .postImages(postImages)
+    public Post toEntity(Long authorId) {
+        return Post.builder()
+                .mainImage(mainImage)
+                .mainComment(mainComment)
+                .authorId(authorId)
                 .build();
     }
 
-    public Post toEntity(User author) {
-        return Post.builder()
-                .author(author)
-                .build();
+    public static PostDto specificForm(Post post) {
+        List<PostImageDto> images = post.getPostImages().stream()
+                .map(PostImageDto::from)
+                .collect(Collectors.toList());
+
+        return new PostDto(
+                post.getId(),
+                post.getCreatedAt(),
+                post.getMainImage(),
+                post.getMainComment(),
+                post.getAuthorId(),
+                images
+        );
+    }
+
+    public static PostDto simpleForm(Post post) {
+        return new PostDto(
+                post.getId(),
+                post.getCreatedAt(),
+                post.getMainImage(),
+                post.getMainComment(),
+                post.getAuthorId(),
+                null
+        );
     }
 
 }

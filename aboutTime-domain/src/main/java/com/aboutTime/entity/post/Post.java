@@ -1,6 +1,5 @@
 package com.aboutTime.entity.post;
 
-import com.aboutTime.entity.User;
 import com.aboutTime.entity.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -26,9 +25,18 @@ public class Post extends BaseTimeEntity {
     @Column(name = "post_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = false)
-    private User author;
+    @Column(name = "main_image")
+    private String mainImage;
+
+    @Column(name = "main_comment")
+    private String mainComment;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "author_id", nullable = false)
+//    private User author;
+    // 테스트를 위해 authorId=1인 유저만 사용
+    @Column(name = "author_id")
+    private Long authorId;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private final List<PostImage> postImages = new ArrayList<>();
@@ -37,13 +45,19 @@ public class Post extends BaseTimeEntity {
     private final List<Reaction> reactions = new ArrayList<>();
 
     @Builder
-    public Post(Long id, User author) {
+    public Post(Long id, String mainImage, String mainComment, Long authorId) {
         this.id = id;
-        this.author = author;
+        this.mainImage = mainImage;
+        this.mainComment = mainComment;
+        this.authorId = authorId;
     }
 
     public void addImage(PostImage postImage) {
         this.postImages.add(postImage);
     }
+
+//    public void addReaction(Reaction reaction) {
+//        this.reactions.add(reaction);
+//    }
 
 }
