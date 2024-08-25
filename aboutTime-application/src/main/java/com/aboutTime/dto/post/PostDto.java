@@ -1,8 +1,6 @@
 package com.aboutTime.dto.post;
 
-import com.aboutTime.entity.User;
 import com.aboutTime.entity.post.Post;
-import com.aboutTime.entity.post.PostImage;
 import com.aboutTime.entity.post.Reaction;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -11,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,14 +26,19 @@ public class PostDto {
     private String mainComment;
     private Long authorId;
 
+    private Double currentTemperature = 29.5;
+    private String weatherIcon = "http://openweathermap.org/img/wn/01d@2x.png";
+
     private List<PostImageDto> postImages;
-//    private List<Reaction> reactions;
+    private List<Reaction> reactions = new ArrayList<>();
 
     public Post toEntity(Long authorId) {
         return Post.builder()
                 .mainImage(mainImage)
                 .mainComment(mainComment)
                 .authorId(authorId)
+                .currentTemperature(currentTemperature)
+                .weatherIcon(weatherIcon)
                 .build();
     }
 
@@ -49,7 +53,10 @@ public class PostDto {
                 post.getMainImage(),
                 post.getMainComment(),
                 post.getAuthorId(),
-                images
+                29.5,
+                "http://openweathermap.org/img/wn/01d@2x.png",
+                images,
+                new ArrayList<>()
         );
     }
 
@@ -60,7 +67,10 @@ public class PostDto {
                 post.getMainImage(),
                 post.getMainComment(),
                 post.getAuthorId(),
-                null
+                29.5,
+                "http://openweathermap.org/img/wn/01d@2x.png",
+                null,
+                new ArrayList<>()
         );
     }
 

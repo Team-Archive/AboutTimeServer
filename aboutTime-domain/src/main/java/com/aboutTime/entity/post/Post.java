@@ -38,6 +38,12 @@ public class Post extends BaseTimeEntity {
     @Column(name = "author_id")
     private Long authorId;
 
+    @Column(name = "current_temperature")
+    private Double currentTemperature;
+
+    @Column(name = "weather_icon")
+    private String weatherIcon;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private final List<PostImage> postImages = new ArrayList<>();
 
@@ -45,11 +51,13 @@ public class Post extends BaseTimeEntity {
     private final List<Reaction> reactions = new ArrayList<>();
 
     @Builder
-    public Post(Long id, String mainImage, String mainComment, Long authorId) {
+    public Post(Long id, String mainImage, String mainComment, Long authorId, Double currentTemperature, String weatherIcon) {
         this.id = id;
         this.mainImage = mainImage;
         this.mainComment = mainComment;
         this.authorId = authorId;
+        this.currentTemperature = currentTemperature;
+        this.weatherIcon = weatherIcon;
     }
 
     public void addImage(PostImage postImage) {
