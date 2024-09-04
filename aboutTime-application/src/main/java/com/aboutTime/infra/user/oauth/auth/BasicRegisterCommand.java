@@ -1,6 +1,6 @@
 package com.aboutTime.infra.user.oauth.auth;
 
-import com.aboutTime.entity.User;
+import com.aboutTime.domain.user.BaseUser;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
@@ -17,5 +17,5 @@ public abstract class BasicRegisterCommand {
         return email;
     }
 
-    public abstract User toUserEntity();
+    public abstract BaseUser toUserEntity();
 }

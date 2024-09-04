@@ -1,4 +1,4 @@
-package com.aboutTime.domain;
+package com.aboutTime.domain.user;
 
 import java.util.Arrays;
 

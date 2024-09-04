@@ -1,6 +1,6 @@
 package com.aboutTime.infra.user.oauth.provider;
 
-import com.aboutTime.domain.OAuthProvider;
+import com.aboutTime.domain.user.OAuthProvider;
 import com.aboutTime.infra.user.oauth.auth.OAuthRegisterCommand;
 
 public interface OAuthProviderClient {

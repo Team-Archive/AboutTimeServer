@@ -1,7 +1,8 @@
 package com.aboutTime.dto.user;
 
-import com.aboutTime.domain.OAuthProvider;
-import com.aboutTime.domain.UserRole;
+import com.aboutTime.domain.user.BaseUser;
+import com.aboutTime.domain.user.OAuthProvider;
+import com.aboutTime.domain.user.UserRole;
 import com.aboutTime.entity.User;
 import com.aboutTime.entity.UserOAuth;
 import lombok.Getter;
@@ -14,7 +15,7 @@ public class OAuthRegisterRequestDto {
     public String email;
     public String nickname;
 
-    public User toUserEntity() {
+    public BaseUser toUserEntity() {
         return new UserOAuth(email, UserRole.GENERAL, provider, nickname);
     }
 }
