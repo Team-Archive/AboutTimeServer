@@ -1,5 +1,6 @@
 package com.aboutTime.service.auth;
 
+import com.aboutTime.dto.user.OAuthLoginRequestDto;
 import com.aboutTime.dto.user.OAuthRegisterRequestDto;
 import com.aboutTime.dto.user.OAuthUserInfoRequestDto;
 import com.aboutTime.infra.user.oauth.provider.OAuthProviderClient;
@@ -29,6 +30,13 @@ public class OAuthUserService {
         resultDto.setNickname(request.getNickname());
 
         return resultDto;
+    }
+
+    public String getOAuthEmail(OAuthLoginRequestDto request) {
+        log.debug("oauth provider access token: {}", request);
+        var provider = request.getProvider();
+        var oAuthProviderClient = getOAuthProviderClient(provider);
+        return oAuthProviderClient.getEmail(request.getToken());
     }
 
     private OAuthProviderClient getOAuthProviderClient(String provider) {

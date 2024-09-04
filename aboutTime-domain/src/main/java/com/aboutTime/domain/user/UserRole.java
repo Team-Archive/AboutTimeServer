@@ -1,4 +1,4 @@
-package com.aboutTime.domain;
+package com.aboutTime.domain.user;
 
 public enum UserRole {
     ADMIN("ROLE_ADMIN"), GENERAL("ROLE_GENERAL");

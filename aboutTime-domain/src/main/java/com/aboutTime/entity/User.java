@@ -1,6 +1,6 @@
 package com.aboutTime.entity;
 
-import com.aboutTime.domain.UserRole;
+import com.aboutTime.domain.user.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
