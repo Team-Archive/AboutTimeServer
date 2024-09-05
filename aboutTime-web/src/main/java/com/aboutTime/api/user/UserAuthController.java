@@ -1,9 +1,9 @@
 package com.aboutTime.api.user;
 
+import com.aboutTime.api.docs.swagger.UserAuthControllerDocs;
 import com.aboutTime.config.security.token.jwt.JwtAuthenticationToken;
 import com.aboutTime.domain.user.UserInfo;
 import com.aboutTime.dto.user.OAuthLoginRequestDto;
-import com.aboutTime.dto.user.OAuthRegisterRequestDto;
 import com.aboutTime.dto.user.OAuthUserInfoRequestDto;
 import com.aboutTime.service.auth.OAuthUserService;
 import com.aboutTime.service.user.UserRegisterService;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "user-auth-controller", description = "회원정보 관련 API 목록")
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-public class UserAuthController {
+public class UserAuthController implements UserAuthControllerDocs {
 
     private final OAuthUserService oAuthUserService;
     private final UserService userService;
