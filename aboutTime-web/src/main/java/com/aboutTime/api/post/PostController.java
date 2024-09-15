@@ -3,7 +3,6 @@ package com.aboutTime.api.post;
 import com.aboutTime.api.docs.swagger.PostControllerDocs;
 import com.aboutTime.dto.post.PostDto;
 import com.aboutTime.dto.post.PostSaveRequestDto;
-import com.aboutTime.entity.User;
 import com.aboutTime.service.post.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

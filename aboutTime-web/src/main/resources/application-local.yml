@@ -19,3 +19,7 @@ cloud:
       instance-profile: true
       accessKey: ${AWS_ACCESSKEY}
       secretKey: ${AWS_SECRETKEY}
+weather:
+  api:
+    key: ${WEATHER_API_KEY}
+    url: ${WEATHER_API_URL}
