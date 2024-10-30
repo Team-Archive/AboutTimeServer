@@ -3,13 +3,13 @@ package com.aboutTime.infra.weather;
 import com.aboutTime.entity.post.weather.Weather;
 import com.aboutTime.entity.post.weather.WeatherData;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import reactor.core.publisher.Mono;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -20,7 +20,7 @@ import java.time.ZonedDateTime;
 @RequiredArgsConstructor
 public class WeatherAPIService {
 
-    private final WebClient webClient;
+    private final RestTemplate restTemplate;
 
     @Value("${weather.api.key}")
     private String apiKey;
@@ -28,7 +28,8 @@ public class WeatherAPIService {
     @Value("${weather.api.url}")
     private String apiUrl;
 
-    public Mono<Weather> getWeatherData(String city) {
+    //city에 따른 날씨 정보 업데이트
+    public Weather getWeatherData(String city) {
         String url = UriComponentsBuilder.fromHttpUrl(apiUrl)
                 .queryParam("q", city)
                 .queryParam("appid", apiKey)
@@ -36,11 +37,15 @@ public class WeatherAPIService {
                 .queryParam("units", "metric")
                 .toUriString();
 
-        return webClient.get()
-                .uri(url)
-                .retrieve()
-                .bodyToMono(JsonNode.class)
-                .map(jsonNode -> processWeatherData(city, jsonNode));
+        try {
+            String response = restTemplate.getForObject(url, String.class);
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode jsonNode = mapper.readTree(response);
+            return processWeatherData(city, jsonNode);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("날씨 데이터 업데이트 실패");
+        }
     }
 
     private Weather processWeatherData(String city, JsonNode jsonNode) {

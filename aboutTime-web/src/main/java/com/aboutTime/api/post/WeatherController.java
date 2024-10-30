@@ -16,36 +16,20 @@ public class WeatherController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Weather> getWeatherById(@PathVariable("id") Long id) {
-        var weather = weatherService.findWeatherById(id);
+        var weather = weatherService.getWeatherById(id);
         return new ResponseEntity<>(weather, HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<Weather> getWeatherByCountryCode(@RequestParam("city") String city) {
-        try {
-            Weather weather = weatherService.getWeatherIfHourMatches(city);
-            return ResponseEntity.ok(weather);
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+    @GetMapping("/city")
+    public ResponseEntity<Weather> getWeatherByCity(@RequestParam String city) {
+        var weather = weatherService.getWeatherByCity(city);
+        return new ResponseEntity<>(weather, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteWeatherById(@PathVariable("id") Long id) {
-        try {
-            weatherService.deleteWeatherById(id);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    @PostMapping("/trigger-update")
-    public ResponseEntity<String> triggerUpdate() {
-        weatherService.updateWeatherData();
-        return ResponseEntity.ok("Weather data updated");
+    @PostMapping
+    public ResponseEntity<Weather> saveWeatherData(@RequestParam String city) {
+        Weather weather = weatherService.saveWeatherData(city);
+        return ResponseEntity.ok(weather);
     }
 
 }

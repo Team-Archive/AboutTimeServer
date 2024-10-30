@@ -3,8 +3,6 @@ package com.aboutTime.entity.post.weather;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,18 +28,13 @@ public class Weather {
     @Column(name = "hour")
     private int hour;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
     @Builder
-    public Weather(String city, String conditionCode, double temperature, int hour, LocalDateTime updatedAt) {
+    public Weather(String city, String conditionCode, double temperature, int hour) {
         this.city = city;
         this.conditionCode = conditionCode;
         this.temperature = temperature;
         this.hour = hour;
-        this.updatedAt = updatedAt;
     }
-
 
 }
 

@@ -8,9 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -22,70 +20,54 @@ public class WeatherService {
     private final WeatherRepository weatherRepository;
     private final WeatherAPIService weatherAPIService;
 
-    private final int updateInterval = 3600000;     //1시간
-
+    @Scheduled(cron = "0 0 * * * ?")
     @Transactional
-    @Scheduled(fixedRate = updateInterval)
     public void updateWeatherData() {
-        log.info("Starting weather data update...");
+        System.out.println("updateWeatherData 실행");
+        List<Weather> weatherList = weatherRepository.findAll();
 
-        LocalDateTime cutoffTime = LocalDateTime.now().minusMinutes(updateInterval / 60000);
-        List<Weather> weatherList = weatherRepository.findByUpdatedAtBefore(cutoffTime);
-        log.info("Found {} weather records to update", weatherList.size());
+        for (Weather weather : weatherList) {
+            String city = weather.getCity();
+            Weather updatedWeather = weatherAPIService.getWeatherData(city);
 
-        weatherList.stream()
-                .map(this::updateWeatherForLocation)
-                .forEach(Mono::subscribe);
+            weather.setConditionCode(updatedWeather.getConditionCode());
+            weather.setTemperature(updatedWeather.getTemperature());
+            weather.setHour(updatedWeather.getHour());
 
-        Mono.when(
-                        weatherList.stream().map(this::updateWeatherForLocation).toList()
-                ).doOnSuccess(unused -> log.info("Successfully updated all weather records"))
-                .doOnError(error -> log.error("Error during weather data update", error))
-                .subscribe();
-    }
-
-    private Mono<Weather> updateWeatherForLocation(Weather weather) {
-        return weatherAPIService.getWeatherData(weather.getCity())
-                .flatMap(updatedWeather -> {
-                    log.info("Updating weather data for {}", weather.getCity());
-                    weather.setConditionCode(updatedWeather.getConditionCode());
-                    weather.setTemperature(updatedWeather.getTemperature());
-                    weather.setHour(updatedWeather.getHour());
-                    return saveWeather(weather);
-                })
-                .doOnError(error -> log.error("Failed to update weather data for {}: {}", weather.getCity(), error.getMessage()));
-    }
-
-    @Transactional
-    public Mono<Weather> saveWeather(Weather weather) {
-        return Mono.fromCallable(() -> weatherRepository.save(weather))
-                .doOnSuccess(savedWeather -> log.info("Weather data saved for {}", savedWeather.getCity()))
-                .doOnError(error -> log.error("Error saving weather data: {}", error.getMessage()));
-    }
-
-    public Weather getWeatherIfHourMatches(String city) {
-        int currentHour = LocalDateTime.now().getHour();
-        log.info("Fetching weather data for city: {}", city);
-
-        Weather weatherData = weatherRepository.findByCity(city)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 날씨 데이터가 없습니다."));
-
-        if (weatherData.getHour() != currentHour) {
-            throw new IllegalStateException("현재 시간과 일치하는 날씨 데이터가 없습니다.");
+            weatherRepository.save(weather);
         }
-
-        log.info("Weather data found and hour matches: {}", weatherData);
-        return weatherData;
-    }
-
-    public Weather findWeatherById(Long id) {
-        return weatherRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 날씨 데이터가 없습니다."));
+        System.out.println("업데이트 완료");
     }
 
     @Transactional
-    public void deleteWeatherById(Long id) {
-        weatherRepository.deleteById(id);
+    public Weather saveWeatherData(String city) {
+        Weather updatedWeather = weatherAPIService.getWeatherData(city);
+
+        try {
+            // 기존 데이터 조회
+            Weather existingWeather = getWeatherByCity(city);
+
+            // 데이터가 존재할 경우 업데이트
+            existingWeather.setConditionCode(updatedWeather.getConditionCode());
+            existingWeather.setTemperature(updatedWeather.getTemperature());
+            existingWeather.setHour(updatedWeather.getHour());
+            log.info("Updated weather data for city: {}", city);
+            return weatherRepository.save(existingWeather); // 업데이트된 데이터 저장
+        } catch (IllegalArgumentException e) {
+            // 데이터가 존재하지 않는 경우 새 데이터 생성
+            log.info("Creating new weather data for city: {}", city);
+            return weatherRepository.save(updatedWeather); // 새 데이터 저장
+        }
+    }
+
+    public Weather getWeatherByCity(String city) {
+        return weatherRepository.findByCity(city)
+                .orElseThrow(() -> new IllegalArgumentException(city + "에 해당하는 날씨 데이터가 없습니다."));
+    }
+
+    public Weather getWeatherById(Long id) {
+        return weatherRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(id + "에 해당하는 날씨 데이터가 없습니다."));
     }
 
 }
