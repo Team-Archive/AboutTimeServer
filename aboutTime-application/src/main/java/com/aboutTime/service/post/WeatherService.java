@@ -1,6 +1,9 @@
 package com.aboutTime.service.post;
 
+import com.aboutTime.common.exception.ResourceNotFoundException;
 import com.aboutTime.entity.post.weather.Weather;
+import com.aboutTime.entity.post.weather.WeatherIcon;
+import com.aboutTime.entity.post.weather.WeatherIconRepository;
 import com.aboutTime.entity.post.weather.WeatherRepository;
 import com.aboutTime.infra.weather.WeatherAPIService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ public class WeatherService {
 
     private final WeatherRepository weatherRepository;
     private final WeatherAPIService weatherAPIService;
+    private final WeatherIconRepository weatherIconRepository;
 
     @Scheduled(cron = "0 0 * * * ?")
     @Transactional
@@ -62,12 +66,18 @@ public class WeatherService {
 
     public Weather getWeatherByCity(String city) {
         return weatherRepository.findByCity(city)
-                .orElseThrow(() -> new IllegalArgumentException(city + "에 해당하는 날씨 데이터가 없습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException(city + "에 해당하는 날씨 데이터가 없습니다."));
     }
 
     public Weather getWeatherById(Long id) {
         return weatherRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(id + "에 해당하는 날씨 데이터가 없습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException(id + "에 해당하는 날씨 데이터가 없습니다."));
+    }
+
+    public String getWeatherIconUrlByCode(String code) {
+        return weatherIconRepository.findByCode(code)
+                .map(WeatherIcon::getUrl)
+                .orElseThrow(() -> new ResourceNotFoundException("해당하는 날씨 아이콘이 없습니다."));
     }
 
 }

@@ -5,6 +5,7 @@ import com.aboutTime.dto.post.PostDto;
 import com.aboutTime.dto.post.PostSaveRequestDto;
 import com.aboutTime.entity.User;
 import com.aboutTime.entity.post.PostRepository;
+import com.aboutTime.entity.post.weather.Weather;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,11 +19,9 @@ import java.util.Objects;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final WeatherService weatherService;
 
     public List<PostDto> getAllPostByUserId(Long userId) {
-//        return postRepository.findAllByAuthorId((user.getId())).stream()
-//                .map(PostDto::from)
-//                .toList();
         return postRepository.findAllByAuthorId(userId).stream()
                 .map(PostDto::simpleForm)
                 .toList();
@@ -43,9 +42,13 @@ public class PostService {
 
     @Transactional
     public void save(PostSaveRequestDto postRequestDto, Long authorId) {
-//        var user = userRepository.findById(authorId)
-//                        .orElseThrow(() -> new ResourceNotFoundException("해당하는 유저가 없습니다."));
-        var post = postRepository.save(postRequestDto.toEntity(authorId));
+        Weather weather = weatherService.getWeatherByCity("Seoul"); //mocking 값
+
+        double temperature = weather.getTemperature();
+        String conditionCode = weather.getConditionCode();
+        String weatherIcon = weatherService.getWeatherIconUrlByCode(conditionCode);
+
+        var post = postRepository.save(postRequestDto.toEntity(authorId, temperature, weatherIcon));
 
         Objects.requireNonNull(postRequestDto.getPostImages()).stream()
                 .map(archiveImageDto -> archiveImageDto.toEntity(post))

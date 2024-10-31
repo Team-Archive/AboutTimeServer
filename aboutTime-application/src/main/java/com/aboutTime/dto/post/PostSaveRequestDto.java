@@ -20,13 +20,13 @@ public class PostSaveRequestDto {
     private String mainComment;
     private List<PostImageDto> postImages;
 
-    public Post toEntity(Long authorId) {
+    public Post toEntity(Long authorId, double temperature, String weatherIcon) {
         return Post.builder()
                 .mainImage(mainImage)
                 .mainComment(mainComment)
                 .authorId(authorId)
-                .currentTemperature(29.5)   //mocking 값
-                .weatherIcon("http://openweathermap.org/img/wn/01d@2x.png")   //mocking 값
+                .currentTemperature(temperature)
+                .weatherIcon(weatherIcon)
                 .build();
     }
 
