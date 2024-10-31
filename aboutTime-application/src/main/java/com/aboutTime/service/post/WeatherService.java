@@ -5,9 +5,10 @@ import com.aboutTime.entity.post.weather.Weather;
 import com.aboutTime.entity.post.weather.WeatherIcon;
 import com.aboutTime.entity.post.weather.WeatherIconRepository;
 import com.aboutTime.entity.post.weather.WeatherRepository;
-import com.aboutTime.infra.weather.WeatherAPIService;
+import com.aboutTime.infra.WeatherAPIService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,44 +25,28 @@ public class WeatherService {
     private final WeatherAPIService weatherAPIService;
     private final WeatherIconRepository weatherIconRepository;
 
-    @Scheduled(cron = "0 0 * * * ?")
+    //3시간마다 날씨 정보 업데이트
+    @Scheduled(cron = "0 0 */3 * * ?")
+    @Async
     @Transactional
     public void updateWeatherData() {
-        System.out.println("updateWeatherData 실행");
+        log.info("Weather data update start");
         List<Weather> weatherList = weatherRepository.findAll();
 
         for (Weather weather : weatherList) {
-            String city = weather.getCity();
-            Weather updatedWeather = weatherAPIService.getWeatherData(city);
-
-            weather.setConditionCode(updatedWeather.getConditionCode());
-            weather.setTemperature(updatedWeather.getTemperature());
-            weather.setHour(updatedWeather.getHour());
-
-            weatherRepository.save(weather);
+            try {
+                updateWeather(weather);
+            } catch (Exception e) {
+                log.error("Failed to update weather for city: {} - Error: {}", weather.getCity(), e.getMessage());
+            }
         }
-        System.out.println("업데이트 완료");
+        log.info("Weather data updated Completed: {}", weatherList.size());
     }
 
     @Transactional
     public Weather saveWeatherData(String city) {
-        Weather updatedWeather = weatherAPIService.getWeatherData(city);
-
-        try {
-            // 기존 데이터 조회
-            Weather existingWeather = getWeatherByCity(city);
-
-            // 데이터가 존재할 경우 업데이트
-            existingWeather.setConditionCode(updatedWeather.getConditionCode());
-            existingWeather.setTemperature(updatedWeather.getTemperature());
-            existingWeather.setHour(updatedWeather.getHour());
-            log.info("Updated weather data for city: {}", city);
-            return weatherRepository.save(existingWeather); // 업데이트된 데이터 저장
-        } catch (IllegalArgumentException e) {
-            // 데이터가 존재하지 않는 경우 새 데이터 생성
-            log.info("Creating new weather data for city: {}", city);
-            return weatherRepository.save(updatedWeather); // 새 데이터 저장
-        }
+        Weather updatedWeather = weatherAPIService.getWeatherDataByCity(city);
+        return updateOrSaveWeather(city, updatedWeather);
     }
 
     public Weather getWeatherByCity(String city) {
@@ -69,9 +54,33 @@ public class WeatherService {
                 .orElseThrow(() -> new ResourceNotFoundException(city + "에 해당하는 날씨 데이터가 없습니다."));
     }
 
-    public Weather getWeatherById(Long id) {
-        return weatherRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(id + "에 해당하는 날씨 데이터가 없습니다."));
+    public List<Weather> getAllWeatherData() {
+        return weatherRepository.findAll();
+    }
+
+    private void updateWeather(Weather weather) {
+        String city = weather.getCity();
+        Weather updatedWeather = weatherAPIService.getWeatherDataByCity(city);
+        applyUpdatedWeatherData(weather, updatedWeather);
+    }
+
+    private Weather updateOrSaveWeather(String city, Weather updatedWeather) {
+        return weatherRepository.findByCity(city)
+                .map(existingWeather -> {
+                    applyUpdatedWeatherData(existingWeather, updatedWeather);
+                    log.info("Updated weather data for city: {}", city);
+                    return weatherRepository.save(existingWeather);
+                })
+                .orElseGet(() -> {
+                    log.info("Creating new weather data for city: {}", city);
+                    return weatherRepository.save(updatedWeather);
+                });
+    }
+
+    private void applyUpdatedWeatherData(Weather existingWeather, Weather updatedWeather) {
+        existingWeather.setConditionCode(updatedWeather.getConditionCode());
+        existingWeather.setTemperature(updatedWeather.getTemperature());
+        existingWeather.setHour(updatedWeather.getHour());
     }
 
     public String getWeatherIconUrlByCode(String code) {
