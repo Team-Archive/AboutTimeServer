@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "User_oauth")
+@Table(name = "users_oauth")
 @DiscriminatorValue(UserOAuth.OAUTH_TYPE)
 @NoArgsConstructor
 public class UserOAuth extends BaseUser {
