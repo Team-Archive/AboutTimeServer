@@ -10,19 +10,27 @@ public class BaseUserDto {
     private Long idx;
     private String userMail;
     private UserRole userRole;
+    private String userId;
     private String userImage;
     private String userNickname;
+    private String userCity;
+    private String selDays;
+    private String selTime;
     private LocalDateTime createdAt;
 
     // DateTimeFormatter 예시 (원래 코드에서 사용되었을 것으로 추정)
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public BaseUserDto(Long idx, String userMail, UserRole userRole, String userImage, String userNickname, LocalDateTime createdAt) {
+    public BaseUserDto(Long idx, String userMail, UserRole userRole, String userId, String userImage, String userNickname, String userCity, String selDays, String selTime, LocalDateTime createdAt) {
         this.idx = idx;
         this.userMail = userMail;
         this.userRole = userRole;
+        this.userId = userId;
         this.userImage = userImage;
         this.userNickname = userNickname;
+        this.userCity = userCity;
+        this.selDays = selDays;
+        this.selTime = selTime;
         this.createdAt = createdAt;
     }
 
@@ -32,6 +40,10 @@ public class BaseUserDto {
 
     public String getUserMail() {
         return userMail;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public UserRole getUserRole() {
@@ -46,6 +58,18 @@ public class BaseUserDto {
         return userNickname;
     }
 
+    public String getUserCity() {
+        return userCity;
+    }
+
+    public String getSelDays() {
+        return selDays;
+    }
+
+    public String getSelTime() {
+        return selTime;
+    }
+
     public String getCreatedAt() {
         return dateTimeFormatter.format(createdAt);
     }
@@ -55,8 +79,12 @@ public class BaseUserDto {
                 baseUser.getIdx(),
                 baseUser.getUserMail(),
                 baseUser.getRole(),
+                baseUser.getUserId(),
                 baseUser.getUserImage(),
                 baseUser.getUserNickname(),
+                baseUser.getUserCity(),
+                baseUser.getSelDays(),
+                baseUser.getSelTime(),
                 baseUser.getCreatedAt()
         );
     }
