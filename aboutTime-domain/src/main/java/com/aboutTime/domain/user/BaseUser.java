@@ -36,6 +36,9 @@ public class BaseUser extends BaseTimeEntity {
     @Column(name = "user_image")
     private String userImage;
 
+    @Column(name = "user_id")
+    private String userId;
+
     @Column(name = "user_nickname")
     private String userNickname;
 
