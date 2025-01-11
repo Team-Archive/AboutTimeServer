@@ -19,9 +19,7 @@ public class UserController implements UserControllerDocs {
     private final UserService userService;
 
     @GetMapping("/info")
-    public ResponseEntity<BaseUserDto> findUser(@Validated @RequestBody BaseUserDto dto) {
-        var result = userService.findUserById(dto.getIdx());
-
-        return ResponseEntity.ok(userService.findUserById(dto.getIdx()));
+    public ResponseEntity<BaseUserDto> findUser(@Validated @RequestParam long idx) {
+        return ResponseEntity.ok(userService.findUserById(idx));
     }
 }
