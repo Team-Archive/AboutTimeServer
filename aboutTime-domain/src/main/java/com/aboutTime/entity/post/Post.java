@@ -31,7 +31,7 @@ public class Post extends BaseTimeEntity {
     @Column(name = "main_comment")
     private String mainComment;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
+    //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "author_id", nullable = false)
 //    private User author;
     // 테스트를 위해 authorId=1인 유저만 사용
@@ -47,9 +47,6 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private final List<PostImage> postImages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private final List<Reaction> reactions = new ArrayList<>();
-
     @Builder
     public Post(Long id, String mainImage, String mainComment, Long authorId, Double currentTemperature, String weatherIcon) {
         this.id = id;
@@ -63,9 +60,5 @@ public class Post extends BaseTimeEntity {
     public void addImage(PostImage postImage) {
         this.postImages.add(postImage);
     }
-
-//    public void addReaction(Reaction reaction) {
-//        this.reactions.add(reaction);
-//    }
 
 }
