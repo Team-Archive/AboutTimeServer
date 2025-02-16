@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 
 @Entity
-@Table(name = "password_user")
+@Table(name = "users_password")
 @DiscriminatorValue(PasswordUser.PASSWORD_TYPE)
 @DynamicInsert
 @NoArgsConstructor

@@ -2,6 +2,13 @@ spring:
   config:
     activate:
       on-profile: local
+  oauth2:
+    client:
+      registration:
+        apple:
+          issuer: "https://appleid.apple.com"
+          audience: ${APPLE_CLIENT_ID}
+          public-key-uri: "https://appleid.apple.com/auth/keys"
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DEV_DB_URL}

@@ -1,0 +1,16 @@
+package com.aboutTime.entity.post;
+
+public enum EmojiType {
+
+    FACE_WITH_TEARS_OF_JOY,
+    SMILING_FACE_WITH_HEART_EYES,
+    KISSING_FACE_WITH_CLOSED_EYES,
+    GRINNING_FACE,
+    LOUDLY_CRYING_FACE,
+    SMILING_FACE_WITH_HEARTS,
+    THUMBS_UP,
+    RED_HEART,
+    PARTY_POPPER,
+    CLAPPING_HANDS
+
+}

@@ -23,8 +23,8 @@ public class PostService {
     /**
      * 특정 유저가 작성한 모든 Post 조회
      */
-    public List<PostDto> getAllPostByUserId(Long authorId) {
-        var user = userRepository.findById(authorId)
+    public List<PostDto> getAllPostByAuthorId(Long authorId) {
+        userRepository.findById(authorId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당하는 유저가 없습니다."));
 
         return postRepository.findAllByAuthorId((authorId)).stream()

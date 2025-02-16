@@ -1,47 +1,49 @@
 package com.aboutTime.entity.post;
 
-import com.aboutTime.entity.User;
-import com.aboutTime.entity.common.BaseTimeEntity;
+import com.aboutTime.domain.user.BaseUser;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "post")
-@SQLDelete(sql = "UPDATE post SET is_deleted = true WHERE post_id=?")
-@SQLRestriction("is_deleted = false")
-public class Reaction extends BaseTimeEntity {
+@Table(name = "reaction")
+public class Reaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reaction_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "user_id", nullable = false)
+    private BaseUser user;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "emoji_id")
     private Emoji emoji;
 
     @Column(name = "count")
-    private int emojiCount;
+    private int count;
 
-    public Reaction(Post post, User user, Emoji emoji) {
+    @Builder
+    public Reaction(Long id, Post post, BaseUser user, Emoji emoji, int count) {
+        this.id = id;
         this.post = post;
         this.user = user;
         this.emoji = emoji;
-        this.emojiCount = 0;
+        this.count = count;
+    }
+
+    public void increaseCount() {
+        this.count++;
     }
 
 }
