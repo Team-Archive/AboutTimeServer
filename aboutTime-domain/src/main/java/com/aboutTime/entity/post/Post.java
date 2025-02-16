@@ -1,5 +1,6 @@
 package com.aboutTime.entity.post;
 
+import com.aboutTime.domain.user.BaseUser;
 import com.aboutTime.entity.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -31,12 +32,9 @@ public class Post extends BaseTimeEntity {
     @Column(name = "main_comment")
     private String mainComment;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "author_id", nullable = false)
-//    private User author;
-    // 테스트를 위해 authorId=1인 유저만 사용
-    @Column(name = "author_id")
-    private Long authorId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id", nullable = false)
+    private BaseUser author;
 
     @Column(name = "current_temperature")
     private Double currentTemperature;
@@ -51,11 +49,11 @@ public class Post extends BaseTimeEntity {
     private final List<Reaction> reactions = new ArrayList<>();
 
     @Builder
-    public Post(Long id, String mainImage, String mainComment, Long authorId, Double currentTemperature, String weatherIcon) {
+    public Post(Long id, String mainImage, String mainComment, BaseUser author, Double currentTemperature, String weatherIcon) {
         this.id = id;
         this.mainImage = mainImage;
         this.mainComment = mainComment;
-        this.authorId = authorId;
+        this.author = author;
         this.currentTemperature = currentTemperature;
         this.weatherIcon = weatherIcon;
     }
@@ -63,9 +61,5 @@ public class Post extends BaseTimeEntity {
     public void addImage(PostImage postImage) {
         this.postImages.add(postImage);
     }
-
-//    public void addReaction(Reaction reaction) {
-//        this.reactions.add(reaction);
-//    }
 
 }

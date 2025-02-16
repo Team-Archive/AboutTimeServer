@@ -11,7 +11,7 @@ import java.util.List;
 public interface PostControllerDocs {
 
     @Operation(summary = "포스트 리스트 조회", description = "특정 사용자의 모든 포스트를 조회합니다.")
-    ResponseEntity<List<PostDto>> postList(@Parameter(name = "userId") Long userId);
+    ResponseEntity<List<PostDto>> postList(@Parameter(name = "authorId") Long authorId);
 
     @Operation(summary = "포스트 상세 조회", description = "포스트 ID를 통해 포스트를 상세 조회합니다.")
     ResponseEntity<PostDto> postSpecificView(@Parameter(name = "postId", description = "조회할 포스트의 ID") Long postId);

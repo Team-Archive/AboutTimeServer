@@ -19,18 +19,18 @@ public class PostController implements PostControllerDocs {
     private final PostService postService;
 
     @GetMapping
-    public ResponseEntity<List<PostDto>> postList(@RequestParam("userId") Long userId) {
-        return ResponseEntity.ok(postService.getAllPostByUserId(userId));
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<List<PostDto>> getAllPost() {
-        return ResponseEntity.ok(postService.getAllPost());
+    public ResponseEntity<List<PostDto>> postList(@RequestParam("authorId") Long authorId) {
+        return ResponseEntity.ok(postService.getAllPostByUserId(authorId));
     }
 
     @GetMapping("/{postId}")
     public ResponseEntity<PostDto> postSpecificView(@PathVariable("postId") Long postId) {
         return ResponseEntity.ok(postService.getOnePostById(postId));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<PostDto>> getAllPost() {
+        return ResponseEntity.ok(postService.getAllPost());
     }
 
     @PostMapping

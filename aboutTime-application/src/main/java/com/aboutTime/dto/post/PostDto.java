@@ -1,5 +1,6 @@
 package com.aboutTime.dto.post;
 
+import com.aboutTime.domain.user.BaseUser;
 import com.aboutTime.entity.post.Post;
 import com.aboutTime.entity.post.Reaction;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -25,18 +26,17 @@ public class PostDto {
     private String mainImage;
     private String mainComment;
     private Long authorId;
-
-    private Double currentTemperature;
-    private String weatherIcon;
+    private Double currentTemperature = 29.5;
+    private String weatherIcon = "http://openweathermap.org/img/wn/01d@2x.png";
 
     private List<PostImageDto> postImages;
     private List<Reaction> reactions = new ArrayList<>();
 
-    public Post toEntity(Long authorId) {
+    public Post toEntity(BaseUser author) {
         return Post.builder()
                 .mainImage(mainImage)
                 .mainComment(mainComment)
-                .authorId(authorId)
+                .author(author)
                 .currentTemperature(currentTemperature)
                 .weatherIcon(weatherIcon)
                 .build();
@@ -52,9 +52,9 @@ public class PostDto {
                 post.getCreatedAt(),
                 post.getMainImage(),
                 post.getMainComment(),
-                post.getAuthorId(),
-                post.getCurrentTemperature(),
-                post.getWeatherIcon(),
+                post.getAuthor().getIdx(),
+                29.5,
+                "http://openweathermap.org/img/wn/01d@2x.png",
                 images,
                 new ArrayList<>()
         );
@@ -66,9 +66,9 @@ public class PostDto {
                 post.getCreatedAt(),
                 post.getMainImage(),
                 post.getMainComment(),
-                post.getAuthorId(),
-                post.getCurrentTemperature(),
-                post.getWeatherIcon(),
+                post.getAuthor().getIdx(),
+                29.5,
+                "http://openweathermap.org/img/wn/01d@2x.png",
                 null,
                 new ArrayList<>()
         );
