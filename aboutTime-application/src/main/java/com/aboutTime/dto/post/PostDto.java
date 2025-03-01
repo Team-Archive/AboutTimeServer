@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +30,7 @@ public class PostDto {
     private String weatherIcon = "http://openweathermap.org/img/wn/01d@2x.png";
 
     private List<PostImageDto> postImages;
-    private List<Reaction> reactions = new ArrayList<>();
+    private List<ReactionListDto> reactions;
 
     public Post toEntity(BaseUser author) {
         return Post.builder()
@@ -43,7 +43,7 @@ public class PostDto {
     }
 
     public static PostDto specificForm(Post post) {
-        List<PostImageDto> images = post.getPostImages().stream()
+        List<PostImageDto> imageDtos = post.getPostImages().stream()
                 .map(PostImageDto::from)
                 .collect(Collectors.toList());
 
@@ -55,8 +55,8 @@ public class PostDto {
                 post.getAuthor().getIdx(),
                 29.5,
                 "http://openweathermap.org/img/wn/01d@2x.png",
-                images,
-                new ArrayList<>()
+                imageDtos,
+                getReactionDtos(post)
         );
     }
 
@@ -70,8 +70,20 @@ public class PostDto {
                 29.5,
                 "http://openweathermap.org/img/wn/01d@2x.png",
                 null,
-                new ArrayList<>()
+                getReactionDtos(post)
         );
+    }
+
+    private static List<ReactionListDto> getReactionDtos(Post post) {
+        return post.getReactions().stream()
+                .collect(Collectors.groupingBy(
+                        reaction -> reaction.getEmoji().getEmojiType(),  // EmojiType 기준 그룹화
+                        Collectors.summingInt(Reaction::getCount)   // count 합산
+                ))
+                .entrySet().stream()
+                .map(entry -> new ReactionListDto(entry.getKey(), entry.getValue())) // Map → List 변환
+                .sorted(Comparator.comparingInt(ReactionListDto::getCount).reversed()) // count 기준 내림차순 정렬
+                .collect(Collectors.toList());
     }
 
 }

@@ -60,7 +60,7 @@ public class ReactionService {
                     .build();
             reaction = reactionRepository.save(newReaction);
         }
-        return ReactionDto.fromEntity(reaction);
+        return ReactionDto.from(reaction);
     }
 
 //    @Transactional

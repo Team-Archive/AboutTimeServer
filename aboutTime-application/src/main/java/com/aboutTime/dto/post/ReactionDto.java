@@ -9,14 +9,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ReactionDto {
 
-    private Long postId;
     private Long userId;
     private EmojiType emojiType;
     private int count;
 
-    public static ReactionDto fromEntity(Reaction reaction) {
+    public static ReactionDto from(Reaction reaction) {
         return new ReactionDto(
-                reaction.getPost().getId(),
                 reaction.getUser().getIdx(),
                 reaction.getEmoji().getEmojiType(),
                 reaction.getCount()
