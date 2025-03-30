@@ -1,5 +1,6 @@
 package com.aboutTime.dto.post;
 
+import com.aboutTime.domain.user.BaseUser;
 import com.aboutTime.entity.post.Post;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -20,11 +21,11 @@ public class PostSaveRequestDto {
     private String mainComment;
     private List<PostImageDto> postImages;
 
-    public Post toEntity(Long authorId) {
+    public Post toEntity(BaseUser author) {
         return Post.builder()
                 .mainImage(mainImage)
                 .mainComment(mainComment)
-                .authorId(authorId)
+                .author(author)
                 .currentTemperature(29.5)   //mocking 값
                 .weatherIcon("http://openweathermap.org/img/wn/01d@2x.png")   //mocking 값
                 .build();

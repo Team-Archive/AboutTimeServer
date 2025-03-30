@@ -1,5 +1,6 @@
 package com.aboutTime.dto.post;
 
+import com.aboutTime.domain.user.BaseUser;
 import com.aboutTime.entity.post.Post;
 import com.aboutTime.entity.post.Reaction;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -9,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,25 +26,24 @@ public class PostDto {
     private String mainImage;
     private String mainComment;
     private Long authorId;
-
     private Double currentTemperature = 29.5;
     private String weatherIcon = "http://openweathermap.org/img/wn/01d@2x.png";
 
     private List<PostImageDto> postImages;
-    private List<Reaction> reactions = new ArrayList<>();
+    private List<ReactionListDto> reactions;
 
-    public Post toEntity(Long authorId) {
+    public Post toEntity(BaseUser author) {
         return Post.builder()
                 .mainImage(mainImage)
                 .mainComment(mainComment)
-                .authorId(authorId)
+                .author(author)
                 .currentTemperature(currentTemperature)
                 .weatherIcon(weatherIcon)
                 .build();
     }
 
     public static PostDto specificForm(Post post) {
-        List<PostImageDto> images = post.getPostImages().stream()
+        List<PostImageDto> imageDtos = post.getPostImages().stream()
                 .map(PostImageDto::from)
                 .collect(Collectors.toList());
 
@@ -52,11 +52,11 @@ public class PostDto {
                 post.getCreatedAt(),
                 post.getMainImage(),
                 post.getMainComment(),
-                post.getAuthorId(),
+                post.getAuthor().getIdx(),
                 29.5,
                 "http://openweathermap.org/img/wn/01d@2x.png",
-                images,
-                new ArrayList<>()
+                imageDtos,
+                getReactionDtos(post)
         );
     }
 
@@ -66,12 +66,24 @@ public class PostDto {
                 post.getCreatedAt(),
                 post.getMainImage(),
                 post.getMainComment(),
-                post.getAuthorId(),
+                post.getAuthor().getIdx(),
                 29.5,
                 "http://openweathermap.org/img/wn/01d@2x.png",
                 null,
-                new ArrayList<>()
+                getReactionDtos(post)
         );
+    }
+
+    private static List<ReactionListDto> getReactionDtos(Post post) {
+        return post.getReactions().stream()
+                .collect(Collectors.groupingBy(
+                        reaction -> reaction.getEmoji().getEmojiType(),  // EmojiType 기준 그룹화
+                        Collectors.summingInt(Reaction::getCount)   // count 합산
+                ))
+                .entrySet().stream()
+                .map(entry -> new ReactionListDto(entry.getKey(), entry.getValue())) // Map → List 변환
+                .sorted(Comparator.comparingInt(ReactionListDto::getCount).reversed()) // count 기준 내림차순 정렬
+                .collect(Collectors.toList());
     }
 
 }
