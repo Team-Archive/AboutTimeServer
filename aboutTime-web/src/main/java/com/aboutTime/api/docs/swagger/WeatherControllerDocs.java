@@ -17,4 +17,5 @@ public interface WeatherControllerDocs {
 
     @Operation(summary = "모든 도시의 날씨 데이터 조회")
     ResponseEntity<List<Weather>> getAllWeatherData();
+
 }

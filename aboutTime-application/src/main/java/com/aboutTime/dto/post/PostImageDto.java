@@ -15,13 +15,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PostImageDto {
 
-    private Long postImageId;
     private String url;
     private String comment;
 
     public static PostImageDto from(PostImage postImage) {
         return PostImageDto.builder()
-                .postImageId(postImage.getId())
                 .url(postImage.getUrl())
                 .comment(postImage.getComment())
                 .build();

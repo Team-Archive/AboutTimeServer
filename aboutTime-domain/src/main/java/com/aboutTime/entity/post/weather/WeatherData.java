@@ -2,6 +2,7 @@ package com.aboutTime.entity.post.weather;
 
 import lombok.Getter;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,14 +24,16 @@ public enum WeatherData {
 
     private final int[] conditionCodes;
 
-    private static final Map<Integer, WeatherData> codeToIconMap = new HashMap<>();
+    private static final Map<Integer, WeatherData> codeToIconMap;
 
     static {
+        Map<Integer, WeatherData> map = new HashMap<>();
         for (WeatherData icon : values()) {
             for (int code : icon.conditionCodes) {
-                codeToIconMap.put(code, icon);
+                map.put(code, icon);
             }
         }
+        codeToIconMap = Collections.unmodifiableMap(map);
     }
 
     WeatherData(int[] conditionCodes) {
@@ -47,15 +50,18 @@ public enum WeatherData {
         String iconName = icon.name();
 
         // 낮과 밤의 구분이 필요한 아이콘
-        if (icon == CLEARNESS && (hour >= 18 || hour < 6)) {
-            iconName = "CLEARNESS_NIGHT";
-        } else if (icon == DRIZZLING && (hour >= 18 || hour < 6)) {
-            iconName = "DRIZZLING_NIGHT";
-        } else if (icon == PARTLY_CLOUDY && (hour >= 18 || hour < 6)) {
-            iconName = "PARTLY_CLOUDY_NIGHT";
+        if (isNight(hour)) {
+            switch (icon) {
+                case CLEARNESS -> iconName = "CLEARNESS_NIGHT";
+                case DRIZZLING -> iconName = "DRIZZLING_NIGHT";
+                case PARTLY_CLOUDY -> iconName = "PARTLY_CLOUDY_NIGHT";
+            }
         }
-
         return iconName;
+    }
+
+    private static boolean isNight(int hour) {
+        return hour >= 18 || hour < 6;
     }
 
 }

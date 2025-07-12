@@ -18,7 +18,7 @@ public class Reaction {
     @Column(name = "reaction_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
@@ -31,7 +31,7 @@ public class Reaction {
     private Emoji emoji;
 
     @Column(name = "count")
-    private int count;
+    private int count = 0;
 
     @Builder
     public Reaction(Long id, Post post, BaseUser user, Emoji emoji, int count) {

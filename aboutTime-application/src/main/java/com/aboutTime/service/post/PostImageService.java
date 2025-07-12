@@ -7,10 +7,12 @@ import com.aboutTime.entity.post.PostRepository;
 import com.aboutTime.infra.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PostImageService {
 
     private final S3Service s3Service;
@@ -23,11 +25,12 @@ public class PostImageService {
 
         var imageUri = s3Service.upload(file);
         var postImage = new PostImage(imageUri, comment, post);
+
+        post.addImage(postImage);
         postImageRepository.save(postImage);
 
         return imageUri;
     }
-
 
     public void deleteImage(Long postImageId) {
         var postImage = postImageRepository.findById(postImageId)

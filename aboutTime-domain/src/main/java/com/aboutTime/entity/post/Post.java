@@ -26,15 +26,15 @@ public class Post extends BaseTimeEntity {
     @Column(name = "post_id")
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id", nullable = false)
+    private BaseUser author;
+
     @Column(name = "main_image")
     private String mainImage;
 
     @Column(name = "main_comment")
     private String mainComment;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = false)
-    private BaseUser author;
 
     @Column(name = "current_temperature")
     private Double currentTemperature;
@@ -42,7 +42,7 @@ public class Post extends BaseTimeEntity {
     @Column(name = "weather_icon")
     private String weatherIcon;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<PostImage> postImages = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)

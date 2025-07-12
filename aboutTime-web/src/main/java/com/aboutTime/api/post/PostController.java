@@ -39,14 +39,15 @@ public class PostController implements PostControllerDocs {
     }
 
     @PostMapping
-    public ResponseEntity<Object> savePost(@RequestBody PostSaveRequestDto requestDto, @RequestParam("authorId") Long authorId) {
+    public ResponseEntity<Void> savePost(@RequestBody PostSaveRequestDto requestDto, @RequestParam("authorId") Long authorId) {
         postService.save(requestDto, authorId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/{id}")
-    public void deletePost(@PathVariable Long id) {
-        postService.delete(id);
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
+        postService.delete(postId);
+        return ResponseEntity.noContent().build();
     }
 
     /**
@@ -68,10 +69,7 @@ public class PostController implements PostControllerDocs {
      * 특정 이모지에 반응한 사용자 목록 조회
      */
     @GetMapping("/{postId}/reactions/{emojiType}")
-    public ResponseEntity<Map<Long, Integer>> getUsersByEmoji(
-            @PathVariable Long postId,
-            @PathVariable String emojiType) {
-
+    public ResponseEntity<Map<Long, Integer>> getUsersByEmoji(@PathVariable Long postId, @PathVariable String emojiType) {
         // 특정 이모지에 반응한 사용자별 카운트 조회
         Map<Long, Integer> userReactions = reactionService.getUserReactionsByEmoji(postId, emojiType);
         return ResponseEntity.ok(userReactions);

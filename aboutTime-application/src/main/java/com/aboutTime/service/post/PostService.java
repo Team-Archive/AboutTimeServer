@@ -62,7 +62,7 @@ public class PostService {
         var post = postRepository.save(postRequestDto.toEntity(user));
 
         Objects.requireNonNull(postRequestDto.getPostImages()).stream()
-                .map(archiveImageDto -> archiveImageDto.toEntity(post))
+                .map(postImageDto -> postImageDto.toEntity(post))
                 .forEach(post::addImage);
     }
 
