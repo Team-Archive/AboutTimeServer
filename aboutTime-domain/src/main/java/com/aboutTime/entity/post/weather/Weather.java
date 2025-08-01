@@ -18,22 +18,25 @@ public class Weather {
     @Column(name = "city")
     private String city;
 
-    // API의 응답값으로 주는 고유 코드
+    @Column(name = "country_code")
+    private String countryCode;
+
     @Column(name = "condition_code")
     private String conditionCode;
 
     @Column(name = "temperature")
-    private double temperature;
+    private Double temperature;
 
-    @Column(name = "hour")
-    private int hour;
+    @Column(name = "country_api_id")
+    private String countryApiId;
 
     @Builder
-    public Weather(String city, String conditionCode, double temperature, int hour) {
+    public Weather(String city, String countryCode, String conditionCode, Double temperature, String countryApiId) {
         this.city = city;
+        this.countryCode = countryCode;
         this.conditionCode = conditionCode;
         this.temperature = temperature;
-        this.hour = hour;
+        this.countryApiId = countryApiId;
     }
 
 }
