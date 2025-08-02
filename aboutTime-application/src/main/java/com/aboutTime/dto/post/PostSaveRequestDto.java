@@ -26,8 +26,6 @@ public class PostSaveRequestDto {
                 .mainImage(mainImage)
                 .mainComment(mainComment)
                 .author(author)
-                .currentTemperature(29.5)   //mocking 값
-                .weatherIcon("http://openweathermap.org/img/wn/01d@2x.png")   //mocking 값
                 .build();
     }
 

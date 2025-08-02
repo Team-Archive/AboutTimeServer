@@ -62,4 +62,8 @@ public class Post extends BaseTimeEntity {
         this.postImages.add(postImage);
     }
 
+    public void updateWeather(Double currentTemperature, String weatherIcon) {
+        this.currentTemperature = currentTemperature;
+        this.weatherIcon = weatherIcon;
+    }
 }

@@ -26,8 +26,8 @@ public class PostDto {
     private String mainImage;
     private String mainComment;
     private Long authorId;
-    private Double currentTemperature = 29.5;
-    private String weatherIcon = "http://openweathermap.org/img/wn/01d@2x.png";
+    private Double currentTemperature;
+    private String weatherIcon;
 
     private List<PostImageDto> postImages;
     private List<ReactionListDto> reactions;
@@ -53,8 +53,8 @@ public class PostDto {
                 post.getMainImage(),
                 post.getMainComment(),
                 post.getAuthor().getIdx(),
-                29.5,
-                "http://openweathermap.org/img/wn/01d@2x.png",
+                post.getCurrentTemperature(),
+                post.getWeatherIcon(),
                 imageDtos,
                 getReactionDtos(post)
         );
@@ -67,8 +67,8 @@ public class PostDto {
                 post.getMainImage(),
                 post.getMainComment(),
                 post.getAuthor().getIdx(),
-                29.5,
-                "http://openweathermap.org/img/wn/01d@2x.png",
+                post.getCurrentTemperature(),
+                post.getWeatherIcon(),
                 null,
                 getReactionDtos(post)
         );

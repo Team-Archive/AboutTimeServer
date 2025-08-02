@@ -5,10 +5,12 @@ import com.aboutTime.domain.user.UserRepository;
 import com.aboutTime.dto.post.PostDto;
 import com.aboutTime.dto.post.PostSaveRequestDto;
 import com.aboutTime.entity.post.PostRepository;
+import com.aboutTime.entity.post.weather.WeatherData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,6 +21,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final WeatherService weatherService;
 
     /**
      * 특정 유저가 작성한 모든 Post 조회
@@ -59,7 +62,16 @@ public class PostService {
         var user = userRepository.findById(authorId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당하는 유저가 없습니다."));
 
-        var post = postRepository.save(postRequestDto.toEntity(user));
+        var post = postRequestDto.toEntity(user);
+        var weather = weatherService.getWeatherByCity(user.getUserCity());
+
+        var weatherConditionCode = Integer.parseInt(weather.getConditionCode());
+        int hour = LocalTime.now().getHour();
+        var weatherIconUrl = weatherService.getWeatherIconUrlByCode(WeatherData.fromConditionCode(weatherConditionCode, hour));
+
+        post.updateWeather(weather.getTemperature(), weatherIconUrl);
+
+        postRepository.save(post);
 
         Objects.requireNonNull(postRequestDto.getPostImages()).stream()
                 .map(postImageDto -> postImageDto.toEntity(post))
@@ -75,5 +87,4 @@ public class PostService {
                 .orElseThrow(() -> new ResourceNotFoundException("해당 post가 없습니다."));
         postRepository.delete(post);
     }
-
 }
